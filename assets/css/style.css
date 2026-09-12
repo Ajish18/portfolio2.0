@@ -717,3 +717,120 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
 
 @media (max-width: 1024px) { .gh-grid { grid-template-columns: 1fr; } .gh-repos { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 620px)  { .gh-repos { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════════════════
+   Cinematic layer
+   Editorial mask reveals, an image-led project rail, and
+   motion that eases over ~1s instead of snapping.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Mask reveal: text rises out from behind its own line ── */
+.mask { overflow: hidden; display: block; }
+.mask > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1.05s var(--ease);
+}
+.mask.in > span,
+.reveal.in .mask > span { transform: none; }
+
+.display .line { display: block; overflow: hidden; }
+.display .line > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1.15s var(--ease);
+}
+.display.in .line > span { transform: none; }
+.display.in .line:nth-child(2) > span { transition-delay: .09s; }
+.display.in .line:nth-child(3) > span { transition-delay: .18s; }
+
+/* ── Nav retracts on the way down, returns on the way up ── */
+.nav-wrap { transition: transform .7s var(--ease), opacity .5s var(--ease); }
+.nav-wrap.hide { transform: translateY(calc(-100% - 20px)); opacity: 0; }
+
+/* ── Hero photo parallax ─────────────────────────────────── */
+.hero-photo { will-change: transform; }
+.photo-frame img { transform: scale(1.12); will-change: transform; }
+
+/* ── Project rail ────────────────────────────────────────── */
+.rail-head { display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; max-width: none; text-align: left; }
+.rail-nav { display: flex; gap: 8px; flex: none; }
+.rail-btn {
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  cursor: pointer; padding: 0; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line);
+  transition: background .4s var(--ease-s), border-color .4s var(--ease-s),
+              opacity .4s var(--ease-s), transform .5s var(--ease);
+}
+.rail-btn svg { width: 17px; height: 17px; }
+.rail-btn:hover:not(:disabled) { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.rail-btn:active:not(:disabled) { transform: scale(.93); }
+.rail-btn:disabled { opacity: .32; cursor: default; }
+
+.rail {
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+  scroll-behavior: smooth; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding-block: 4px 8px;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail-track {
+  display: flex; gap: 14px; width: max-content;
+  padding-inline: max(24px, calc((100vw - var(--wrap)) / 2 + 24px));
+}
+.rail .proj {
+  scroll-snap-align: start; flex: none;
+  width: min(86vw, 380px); display: flex; flex-direction: column;
+  border-radius: var(--r-xl); overflow: hidden;
+  background: var(--surface); border: 1px solid var(--line-soft); padding: 0;
+  transition: transform .7s var(--ease), box-shadow .7s var(--ease), border-color .5s var(--ease-s);
+}
+.rail .proj:hover { transform: translateY(-4px); box-shadow: var(--sh-3); border-color: var(--line); }
+.rail .proj.feat { width: min(92vw, 560px); }
+
+.proj-art { position: relative; aspect-ratio: 16 / 9; display: grid; place-items: center; overflow: hidden; }
+.proj-art.kailon { background: radial-gradient(120% 120% at 30% 20%, #ff8a3d 0%, #f26400 45%, #c74d00 100%); }
+.proj-art img { width: 34%; max-width: 150px; height: auto;
+  filter: drop-shadow(0 14px 34px rgba(0,0,0,.28));
+  transition: transform 1.2s var(--ease); }
+.rail .proj:hover .proj-art img { transform: scale(1.07) translateY(-3px); }
+.proj-flag {
+  position: absolute; top: 14px; right: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 11px 5px 9px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  background: rgba(255,255,255,.92); color: #111;
+}
+.proj-flag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #1baf7a; }
+
+.proj-body { padding: 26px; display: flex; flex-direction: column; flex: 1; }
+.rail .proj h3 { font-size: 24px; margin: 12px 0 4px; letter-spacing: -.034em; }
+.rail .proj .tags { margin-top: auto; padding-top: 18px; }
+.proj-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.btn.sm { padding: 9px 16px; font-size: 13.5px; }
+.btn.sm svg { width: 14px; height: 14px; }
+
+/* ── Slow lift on the static card grids ──────────────────── */
+.kpi, .skill, .gh-repos li, .cert-list li, .tl-card {
+  transition: transform .7s var(--ease), box-shadow .7s var(--ease), border-color .5s var(--ease-s);
+}
+
+@media (max-width: 860px) {
+  .rail-head { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .rail-track { padding-inline: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mask > span, .display .line > span { transform: none !important; }
+  .rail { scroll-behavior: auto; }
+  .nav-wrap.hide { transform: none; opacity: 1; }
+}
+
+/* every rail card carries an art block, so the row reads as one system */
+.proj-art > svg { width: 46px; height: 46px; stroke-width: 1.1; color: var(--ink-3);
+  transition: transform 1.2s var(--ease), color .6s var(--ease-s); }
+.rail .proj:hover .proj-art > svg { transform: scale(1.1); color: var(--ink-2); }
+.a-etems    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, var(--accent) 9%, var(--surface-2))); }
+.a-quickfix { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #1baf7a 9%, var(--surface-2))); }
+.a-event    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #6a5cff 9%, var(--surface-2))); }
+.a-ruban    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #eb6834 8%, var(--surface-2))); }
+.proj-art:not(.kailon) { border-bottom: 1px solid var(--line-soft); }

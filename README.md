@@ -14,11 +14,12 @@ centrepiece is a **live GitHub dashboard** that refetches on every page load.
 |---|---|
 | Hero | Portrait, roles, résumé download, social links |
 | Impact | Count-up KPIs and a bar chart of reduction delivered per workflow (figures from the CV) |
+| Featured | **Kailon** — multi-tenant gym management platform, [live on Vercel](https://gym-kailon.vercel.app) ([source](https://github.com/Ajish18/GYM-Management-Kailon)) |
 | Live from GitHub | Contribution calendar, streak, repo count, last push, language breakdown, activity feed and recently-pushed repos — all fetched live |
 | Inside the build | The ETEMS 3-tier approval flow, animated, plus a typed Job Card server-script snippet |
 | About / Skills | Professional summary and the six skill groups |
 | Experience | Quickfix (Service Management ERP) and KYO Restaurant Group, Cambodia |
-| Projects | ETEMS, Event Scheduler, Ruban Mobiles |
+| Projects | A scroll-snap rail — Kailon (live), ETEMS, Quickfix, Event Scheduler, Ruban Mobiles |
 | Education | B.Tech IT, CGPA 8.1 + four certifications |
 | Contact | Email, phone, LinkedIn, GitHub |
 
@@ -53,6 +54,13 @@ assets/
   img/                portrait, square avatar, favicon
   docs/               résumé PDF
 ```
+
+## Motion
+
+Editorial mask reveals on headings, a scroll-snap project rail with keyboard and
+button controls, scroll parallax on the hero portrait, and a header that retracts
+on the way down and returns on the way up. Everything eases on an iOS
+deceleration curve and is fully disabled under `prefers-reduced-motion`.
 
 ## Accessibility & performance
 

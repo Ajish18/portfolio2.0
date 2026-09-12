@@ -111,10 +111,10 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="pill reveal"><span class="live-dot" aria-hidden="true"></span>Open to Frappe / ERPNext roles</p>
-      <h1 class="display reveal" data-d="1">
-        <span class="line">I build ERP</span>
-        <span class="line">that people</span>
-        <span class="line accent">actually use.</span>
+      <h1 class="display">
+        <span class="line"><span>I build ERP</span></span>
+        <span class="line"><span>that people</span></span>
+        <span class="line accent"><span>actually use.</span></span>
       </h1>
       <p class="lede reveal" data-d="2">
         Frappe Developer and ERP Implementation Engineer. I design DocTypes, wire multi-level
@@ -135,7 +135,8 @@
 
     <figure class="hero-photo reveal" data-d="2">
       <div class="photo-frame">
-        <img src="assets/img/ajish.jpg" alt="Ajish I" width="880" height="1100" fetchpriority="high">
+        <img src="assets/img/ajish.jpg" alt="Ajish I" width="880" height="1100" fetchpriority="high"
+               data-parallax="0.035" data-parallax-scale="1.12">
         <div class="photo-vignette" aria-hidden="true"></div>
         <figcaption class="photo-tag">
           <span class="pt-role">Frappe Developer</span>
@@ -166,7 +167,7 @@
   <div class="wrap">
     <header class="sec-head reveal">
       <span class="eyebrow">Measured outcomes</span>
-      <h2>Numbers from shipped ERP work</h2>
+      <h2 class="mask"><span>Numbers from shipped ERP work</span></h2>
       <p class="sec-sub">Every figure below is from a system running in production for a real business.</p>
     </header>
 
@@ -178,18 +179,12 @@
         <p>Repair-shop operations digitalised end to end at Quickfix.</p>
       </article>
       <article class="kpi reveal" data-d="1">
-        <svg class="kpi-ico" viewBox="0 0 24 24"><use href="#ic-blocks"/></svg>
-        <div class="kpi-val"><span class="count" data-to="10" data-dur="1100">0</span><i>+</i></div>
-        <h3>Custom DocTypes</h3>
-        <p>Job Cards, technician assignment, spare-parts inventory.</p>
-      </article>
-      <article class="kpi reveal" data-d="2">
         <svg class="kpi-ico" viewBox="0 0 24 24"><use href="#ic-bolt"/></svg>
         <div class="kpi-val"><i class="pre">~</i><span class="count" data-to="40" data-dur="1200">0</span><i>%</i></div>
         <h3>Faster data entry</h3>
         <p>Form redesign and defaults cut keystrokes per job card.</p>
       </article>
-      <article class="kpi reveal" data-d="3">
+      <article class="kpi reveal" data-d="2">
         <svg class="kpi-ico" viewBox="0 0 24 24"><use href="#ic-wallet"/></svg>
         <div class="kpi-val"><span class="count" data-to="50" data-dur="1300">0</span><i>%</i></div>
         <h3>Shorter reimbursement cycle</h3>
@@ -229,7 +224,7 @@
   <div class="wrap">
     <header class="sec-head reveal">
       <span class="eyebrow">Live from GitHub</span>
-      <h2>What I've been building lately</h2>
+      <h2 class="mask"><span>What I've been building lately</span></h2>
       <p class="sec-sub">
         Pulled straight from the GitHub API every time this page loads — contribution
         calendar, repositories and recent activity for
@@ -312,7 +307,7 @@
   <div class="wrap">
     <header class="sec-head reveal">
       <span class="eyebrow">Inside the build</span>
-      <h2>How an ERPNext module actually works</h2>
+      <h2 class="mask"><span>How an ERPNext module actually works</span></h2>
       <p class="sec-sub">Two pieces of real work: the approval chain behind ETEMS, and the hook that keeps stock honest at Quickfix.</p>
     </header>
 
@@ -358,7 +353,7 @@
   <div class="wrap about-grid">
     <header class="sec-head left reveal">
       <span class="eyebrow">About</span>
-      <h2>Business rules in, working software out.</h2>
+      <h2 class="mask"><span>Business rules in, working software out.</span></h2>
     </header>
     <div class="about-body reveal" data-d="1">
       <p>
@@ -391,7 +386,7 @@
   <div class="wrap">
     <header class="sec-head reveal">
       <span class="eyebrow">Technical skills</span>
-      <h2>The stack I work in every day</h2>
+      <h2 class="mask"><span>The stack I work in every day</span></h2>
     </header>
     <div class="skill-grid">
       <article class="skill reveal">
@@ -427,7 +422,7 @@
   <div class="wrap">
     <header class="sec-head reveal">
       <span class="eyebrow">Work experience</span>
-      <h2>Software Engineer — Frappe / ERPNext</h2>
+      <h2 class="mask"><span>Software Engineer — Frappe / ERPNext</span></h2>
       <p class="sec-sub">Aerele Technologies · Dec 2025 – Present</p>
     </header>
 
@@ -469,40 +464,108 @@
 <!-- ══════════════ PROJECTS ══════════════ -->
 <section id="projects" class="section">
   <div class="wrap">
-    <header class="sec-head reveal">
-      <span class="eyebrow">Key projects</span>
-      <h2>Things I designed and shipped</h2>
+    <header class="sec-head rail-head reveal">
+      <div>
+        <span class="eyebrow">Selected work</span>
+        <h2 class="mask"><span>Things I designed and shipped</span></h2>
+      </div>
+      <div class="rail-nav">
+        <button class="rail-btn" id="railPrev" type="button" aria-label="Previous project" disabled>
+          <svg viewBox="0 0 24 24" style="transform:rotate(180deg)"><use href="#ic-arrow"/></svg>
+        </button>
+        <button class="rail-btn" id="railNext" type="button" aria-label="Next project">
+          <svg viewBox="0 0 24 24"><use href="#ic-arrow"/></svg>
+        </button>
+      </div>
     </header>
+  </div>
 
-    <div class="proj-grid">
-      <article class="proj reveal">
-        <span class="proj-num">01</span>
-        <h3>ETEMS</h3>
-        <p class="proj-sub">Enterprise Travel &amp; Expense Management System</p>
-        <p>A workflow-driven ERP module automating Travel Requests and Expense Claims through a
-           3-tier approval chain — Employee → Manager → Finance — cutting reimbursement cycle time by <b>50%</b>.</p>
-        <p>Automated advance disbursement, payable/receivable reconciliation and audit-trail
-           reporting, ensuring <b>100% financial compliance</b>.</p>
-        <ul class="tags"><li>Python</li><li>Frappe</li><li>ERPNext</li><li>JavaScript</li></ul>
+  <div class="rail" id="projRail" tabindex="0" aria-label="Projects, scrollable">
+    <div class="rail-track">
+
+      <article class="proj feat">
+        <div class="proj-art kailon">
+          <img src="assets/img/kailon.png" alt="" width="320" height="320" loading="lazy">
+          <span class="proj-flag">Live</span>
+        </div>
+        <div class="proj-body">
+          <span class="proj-num">01</span>
+          <h3>Kailon</h3>
+          <p class="proj-sub">Multi-tenant gym management platform</p>
+          <p>One app replacing the spreadsheet, paper register and WhatsApp group —
+             memberships and payments, attendance and streaks, workout programming,
+             diet and macros, progress tracking and reports.</p>
+          <p>Five roles in a single tenant — platform admin, owner, receptionist,
+             trainer and member — each with a scoped dashboard. Every query is isolated
+             per gym, with revocable sessions and rate limiting.</p>
+          <ul class="tags"><li>Next.js 15</li><li>React 19</li><li>TypeScript</li><li>Prisma</li><li>PostgreSQL</li><li>NextAuth v5</li><li>Tailwind v4</li></ul>
+          <div class="proj-links">
+            <a class="btn primary sm" href="https://gym-kailon.vercel.app" target="_blank" rel="noopener">
+              Open live app<svg viewBox="0 0 24 24"><use href="#ic-arrow"/></svg>
+            </a>
+            <a class="btn ghost sm" href="https://github.com/Ajish18/GYM-Management-Kailon" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24"><use href="#ic-github"/></svg>Source
+            </a>
+          </div>
+        </div>
       </article>
 
-      <article class="proj reveal" data-d="1">
-        <span class="proj-num">02</span>
-        <h3>Event Scheduler</h3>
-        <p class="proj-sub">Web-Based Management System</p>
-        <p>Full-stack event scheduling platform with a REST API backend, MySQL integration and
-           scheduling logic supporting concurrent event tracking for <b>500+ events</b>.</p>
-        <ul class="tags"><li>Python</li><li>Flask</li><li>MySQL</li></ul>
+      <article class="proj">
+        <div class="proj-art a-etems"><svg viewBox="0 0 24 24"><use href="#ic-receipt"/></svg></div>
+        <div class="proj-body">
+          <span class="proj-num">02</span>
+          <h3>ETEMS</h3>
+          <p class="proj-sub">Enterprise Travel &amp; Expense Management System</p>
+          <p>A workflow-driven ERP module automating Travel Requests and Expense Claims
+             through a 3-tier approval chain — Employee → Manager → Finance — cutting
+             reimbursement cycle time by <b>50%</b>.</p>
+          <p>Automated advance disbursement, payable/receivable reconciliation and
+             audit-trail reporting, ensuring <b>100% financial compliance</b>.</p>
+          <ul class="tags"><li>Python</li><li>Frappe</li><li>ERPNext</li><li>JavaScript</li></ul>
+        </div>
       </article>
 
-      <article class="proj reveal" data-d="2">
-        <span class="proj-num">03</span>
-        <h3>Ruban Mobiles</h3>
-        <p class="proj-sub">Business Website</p>
-        <p>Responsive, e-commerce-ready website engineered and deployed on <b>AWS S3</b>, featuring
-           dynamic product catalogues, integrated Google Maps location and contact automation.</p>
-        <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>AWS S3</li></ul>
+      <article class="proj">
+        <div class="proj-art a-quickfix"><svg viewBox="0 0 24 24"><use href="#ic-blocks"/></svg></div>
+        <div class="proj-body">
+          <span class="proj-num">03</span>
+          <h3>Quickfix</h3>
+          <p class="proj-sub">Service Management ERP · custom Frappe app</p>
+          <p>Production-grade custom app digitalising end-to-end repair shop operations —
+             <b>10+ custom DocTypes</b> covering Job Cards, technician assignment and
+             spare-parts inventory.</p>
+          <p>Multi-stage approvals and automated invoicing cut processing from hours to
+             minutes, with real-time stock deduction on job completion.</p>
+          <ul class="tags"><li>Frappe</li><li>ERPNext</li><li>Python</li><li>MariaDB</li></ul>
+        </div>
       </article>
+
+      <article class="proj">
+        <div class="proj-art a-event"><svg viewBox="0 0 24 24"><use href="#ic-doc"/></svg></div>
+        <div class="proj-body">
+          <span class="proj-num">04</span>
+          <h3>Event Scheduler</h3>
+          <p class="proj-sub">Web-based management system</p>
+          <p>Full-stack event scheduling platform with a REST API backend, MySQL
+             integration and scheduling logic supporting concurrent event tracking for
+             <b>500+ events</b>.</p>
+          <ul class="tags"><li>Python</li><li>Flask</li><li>MySQL</li></ul>
+        </div>
+      </article>
+
+      <article class="proj">
+        <div class="proj-art a-ruban"><svg viewBox="0 0 24 24"><use href="#ic-layout"/></svg></div>
+        <div class="proj-body">
+          <span class="proj-num">05</span>
+          <h3>Ruban Mobiles</h3>
+          <p class="proj-sub">Business website</p>
+          <p>Responsive, e-commerce-ready website engineered and deployed on <b>AWS S3</b>,
+             featuring dynamic product catalogues, integrated Google Maps location and
+             contact automation.</p>
+          <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>AWS S3</li></ul>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>
@@ -538,7 +601,7 @@
     <div class="contact reveal">
       <div class="contact-copy">
         <span class="eyebrow">Get in touch</span>
-        <h2>Hiring for ERPNext?</h2>
+        <h2 class="mask"><span>Hiring for ERPNext?</span></h2>
         <p>I'm open to Frappe Developer, ERPNext Developer and ERP Technical Consultant roles.
            Send the requirement — I'll reply with how I'd build it.</p>
         <div class="hero-cta">

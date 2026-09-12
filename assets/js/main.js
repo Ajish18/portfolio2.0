@@ -74,6 +74,16 @@
   }, { rootMargin: '0px 0px -8% 0px', threshold: .12 });
   $$('.reveal').forEach(n => revealIO.observe(n));
 
+  /* mask reveals — headings rise out from behind their own line */
+  const maskIO = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      obs.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: .2 });
+  $$('.mask, .display').forEach(n => maskIO.observe(n));
+
   /* ── Count-up numbers ──────────────────────────────────── */
   const easeOut = t => 1 - Math.pow(1 - t, 3);
   const countUp = node => {
@@ -240,6 +250,69 @@
       history.replaceState(null, '', id);
     });
   });
+
+  /* ── Nav retracts going down, returns going up ─────────── */
+  if (!reduced) {
+    let lastY = scrollY, idle = 0;
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      const down = y > lastY;
+      if (Math.abs(y - lastY) > 4) {
+        navWrap?.classList.toggle('hide', down && y > 260 && (menu?.hidden !== false));
+        lastY = y;
+      }
+      clearTimeout(idle);
+      idle = setTimeout(() => navWrap?.classList.remove('hide'), 1400);
+    }, { passive: true });
+  }
+
+  /* ── Scroll parallax ───────────────────────────────────── */
+  const parallax = $$('[data-parallax]');
+  if (parallax.length && !reduced && matchMedia('(min-width: 1025px)').matches) {
+    let pTick = false;
+    const onP = () => {
+      parallax.forEach(n => {
+        const r = n.getBoundingClientRect();
+        const mid = r.top + r.height / 2 - innerHeight / 2;
+        const y = (-mid * parseFloat(n.dataset.parallax)).toFixed(1);
+        const sc = n.dataset.parallaxScale || 1;
+        n.style.transform = `translate3d(0, ${y}px, 0) scale(${sc})`;
+      });
+      pTick = false;
+    };
+    addEventListener('scroll', () => {
+      if (!pTick) { pTick = true; requestAnimationFrame(onP); }
+    }, { passive: true });
+    onP();
+  }
+
+  /* ── Project rail ──────────────────────────────────────── */
+  const rail = $('#projRail');
+  if (rail) {
+    const prev = $('#railPrev'), next = $('#railNext');
+    const step = () => {
+      const card = rail.querySelector('.proj');
+      return card ? card.getBoundingClientRect().width + 14 : rail.clientWidth * .8;
+    };
+    const track = rail.querySelector('.rail-track');
+    /* snap-align rests the rail at the track's leading padding, not at 0 */
+    const lead = () => parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    const sync = () => {
+      const max = rail.scrollWidth - rail.clientWidth - 4;
+      if (prev) prev.disabled = rail.scrollLeft <= lead() + 4;
+      if (next) next.disabled = rail.scrollLeft >= max;
+    };
+    prev?.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: reduced ? 'auto' : 'smooth' }));
+    next?.addEventListener('click', () => rail.scrollBy({ left:  step(), behavior: reduced ? 'auto' : 'smooth' }));
+    rail.addEventListener('scroll', sync, { passive: true });
+    addEventListener('resize', sync);
+    rail.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      rail.scrollBy({ left: e.key === 'ArrowRight' ? step() : -step(), behavior: reduced ? 'auto' : 'smooth' });
+    });
+    sync();
+  }
 
   /* ── Subtle parallax on the hero photo ─────────────────── */
   const stack = $('.photo-frame');
