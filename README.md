@@ -4,49 +4,64 @@ Personal portfolio for **Ajish I** — Frappe Developer & ERP Implementation Eng
 
 **Live:** https://ajish18.github.io/portfolio2.0/
 
-An iOS/macOS-inspired single page: frosted glass surfaces, squircle geometry,
-spring motion, and a working replica of the kind of ERPNext operations console
-I build — number cards, Script-Report-style charts, and an animated approval
-workflow.
+A single page in an Apple-adjacent visual language: hairline structure, one accent
+colour, generous whitespace, and motion that settles instead of bouncing. The
+centrepiece is a **live GitHub dashboard** that refetches on every page load.
 
 ## What's in it
 
 | Section | What it shows |
 |---|---|
 | Hero | Portrait, roles, résumé download, social links |
-| Impact | Count-up KPIs and a bar chart of reduction delivered per workflow (real figures) |
-| Dashboard | ERPNext ops console — line, stacked-bar and donut charts, a 3-tier approval-flow animation, and a typed server-script snippet (*sample data, clearly labelled*) |
-| About / Skills | Professional summary and the six skill groups from the CV |
+| Impact | Count-up KPIs and a bar chart of reduction delivered per workflow (figures from the CV) |
+| Live from GitHub | Contribution calendar, streak, repo count, last push, language breakdown, activity feed and recently-pushed repos — all fetched live |
+| Inside the build | The ETEMS 3-tier approval flow, animated, plus a typed Job Card server-script snippet |
+| About / Skills | Professional summary and the six skill groups |
 | Experience | Quickfix (Service Management ERP) and KYO Restaurant Group, Cambodia |
 | Projects | ETEMS, Event Scheduler, Ruban Mobiles |
 | Education | B.Tech IT, CGPA 8.1 + four certifications |
-| Contact | Email, phone, LinkedIn, GitHub, CV download |
+| Contact | Email, phone, LinkedIn, GitHub |
+
+## Live data
+
+Three public endpoints, no token and no build step:
+
+| Endpoint | Feeds |
+|---|---|
+| `api.github.com/users/Ajish18` | repo count, account age |
+| `api.github.com/users/Ajish18/repos` | languages, recently-pushed list, last push time |
+| `api.github.com/users/Ajish18/events/public` | activity feed |
+| `github-contributions-api.jogruber.de` | contribution calendar and streak |
+
+Each panel fails independently — if one call is rate-limited or down, that panel
+shows a fallback and links to GitHub while the rest still render. The status pill
+in the console title bar reports `live`, `partial` or `offline`.
 
 ## Stack
 
-Plain HTML, CSS and JavaScript. No build step, no framework, no trackers.
-Charts are hand-rolled SVG — colours come from CSS custom properties, so the
-light/dark toggle repaints every mark.
+Plain HTML, CSS and JavaScript. No framework, no build step, no external JS
+dependencies. Charts are hand-rolled SVG whose colours come from CSS custom
+properties, so the light/dark toggle repaints every mark.
 
 ```
-index.html
+index.html            page + inline SVG icon sprite
 assets/
-  css/style.css     design tokens, glass surfaces, layout, responsive rules
-  js/charts.js      SVG chart engine + shared tooltip
-  js/main.js        theme, nav, scroll reveals, counters, tabs, flow animation
-  img/              portrait + favicon
-  docs/             résumé PDF
+  css/style.css       design tokens, layout, responsive rules
+  js/charts.js        SVG chart engine + shared tooltip
+  js/github.js        live GitHub data layer
+  js/main.js          theme, nav, scroll reveals, counters, tabs, flow animation
+  img/                portrait, square avatar, favicon
+  docs/               résumé PDF
 ```
 
 ## Accessibility & performance
 
-- Light and dark palettes are both deliberately chosen — the chart colours pass
+- Light and dark palettes are both deliberately chosen; chart colours pass
   colourblind-separation, lightness-band and contrast checks in each mode.
-- Every chart has an `aria-label` description; the impact chart also ships a
-  table view.
+- The contribution heatmap uses a single-hue sequential ramp, correct for each mode.
+- Charts carry `aria-label` descriptions; the impact chart also ships a table view.
 - `prefers-reduced-motion` disables all animation.
 - Keyboard-navigable tabs, a skip link, and visible focus rings.
-- Single page, two small scripts, one image — no external JS dependencies.
 
 ## Running locally
 
@@ -57,8 +72,8 @@ python3 -m http.server 8080
 
 ## Deploying
 
-GitHub Pages serves `main` from the repository root. `.nojekyll` keeps Pages
-from reprocessing the files.
+GitHub Pages serves `main` from the repository root. `.nojekyll` keeps Pages from
+reprocessing the files.
 
 ## Contact
 

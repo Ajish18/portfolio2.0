@@ -19,7 +19,6 @@
     const next = nowDark ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
     try { localStorage.setItem('theme', next); } catch {}
-    /* charts read CSS variables live, but the donut/line gradients re-resolve on redraw */
     setTimeout(() => window.__redrawCharts?.(), 60);
   });
 
@@ -127,7 +126,6 @@
     moveInk(tab);
     if (tab.id === 'tab-flow') runFlow();
     if (tab.id === 'tab-code') typeCode();
-    if (tab.id === 'tab-ops') setTimeout(() => window.__redrawCharts?.(), 40);
   };
   tabs.forEach((t, i) => {
     t.addEventListener('click', () => activate(t));
@@ -244,14 +242,14 @@
   });
 
   /* ── Subtle parallax on the hero photo ─────────────────── */
-  const stack = $('.squircle');
+  const stack = $('.photo-frame');
   if (stack && !reduced && matchMedia('(pointer:fine)').matches) {
     const hero = $('.hero');
     hero.addEventListener('pointermove', e => {
       const r = hero.getBoundingClientRect();
       const dx = (e.clientX - r.left) / r.width - .5;
       const dy = (e.clientY - r.top) / r.height - .5;
-      stack.style.transform = `perspective(900px) rotateY(${dx * 7}deg) rotateX(${-dy * 7}deg)`;
+      stack.style.transform = `perspective(1200px) rotateY(${dx * 3.4}deg) rotateX(${-dy * 3.4}deg)`;
     });
     hero.addEventListener('pointerleave', () => { stack.style.transform = ''; });
   }
