@@ -789,14 +789,13 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
   transition: transform .7s var(--ease), box-shadow .7s var(--ease), border-color .5s var(--ease-s);
 }
 .rail .proj:hover { transform: translateY(-4px); box-shadow: var(--sh-3); border-color: var(--line); }
-.rail .proj.feat { width: min(92vw, 560px); }
 
 .proj-art { position: relative; height: 190px; flex: none; display: grid; place-items: center; overflow: hidden; }
-.proj-art.kailon { background: radial-gradient(120% 120% at 30% 20%, #ff8a3d 0%, #f26400 45%, #c74d00 100%); }
-.proj-art img { width: auto; height: 84px; max-width: 60%;
-  filter: drop-shadow(0 12px 28px rgba(0,0,0,.24));
+.proj-art.kailon { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #F26400 12%, var(--surface-2))); }
+.proj-art img { width: 78px; height: 78px; max-width: none;
+  border-radius: 18px;
+  filter: drop-shadow(0 14px 30px rgba(0,0,0,.22));
   transition: transform 1.2s var(--ease); }
-.proj-art.a-erp img, .proj-art.a-frappe img { height: 62px; filter: none; }
 .rail .proj:hover .proj-art img { transform: scale(1.07) translateY(-3px); }
 .proj-flag {
   position: absolute; top: 14px; right: 14px;
@@ -835,15 +834,12 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1
 .rail .proj:hover .proj-art > svg { transform: scale(1.1); color: var(--ink-2); }
 .a-etems    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, var(--accent) 9%, var(--surface-2))); }
 .a-quickfix { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #1baf7a 9%, var(--surface-2))); }
-.a-event    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #6a5cff 9%, var(--surface-2))); }
-.a-ruban    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #eb6834 8%, var(--surface-2))); }
-.proj-art:not(.kailon) { border-bottom: 1px solid var(--line-soft); }
+.a-event    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #6E6BF2 12%, var(--surface-2))); }
+.a-ruban    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #FF7A4D 12%, var(--surface-2))); }
+.proj-art { border-bottom: 1px solid var(--line-soft); }
 
 /* ChadSwap art */
-.a-chad { background: linear-gradient(150deg, #1b1036 0%, #3a1d6e 45%, #14f195 210%); }
-.chad-mark { font-size: 58px; line-height: 1; color: #fff; font-weight: 300;
-  text-shadow: 0 0 28px rgba(20,241,149,.55); transition: transform 1.2s var(--ease); }
-.rail .proj:hover .chad-mark { transform: scale(1.12); }
+.a-chad { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #9945FF 12%, var(--surface-2))); }
 /* brand-logo art sits on a neutral ground so the marks stay true */
-.a-erp    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #067EFB 10%, var(--surface-2))); }
-.a-frappe { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #7B808A 14%, var(--surface-2))); }
+.a-erp    { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #067EFB 12%, var(--surface-2))); }
+.a-frappe { background: linear-gradient(150deg, var(--surface-2), color-mix(in srgb, #7B808A 16%, var(--surface-2))); }
