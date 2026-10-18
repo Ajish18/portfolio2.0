@@ -9,6 +9,10 @@
   const USER = 'Ajish18';
   const API  = 'https://api.github.com';
   const CAL  = `https://github-contributions-api.jogruber.de/v4/${USER}?y=last`;
+  /* written every few minutes by .github/workflows/pages.yml — includes private work */
+  const SNAP = 'data/github.json';
+  const SNAP_MAX_AGE = 2 * 3600e3;   /* older than this → use live public APIs */
+  const REFRESH = 3 * 60e3;          /* re-check while the page is open */
 
   const $ = id => document.getElementById(id);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -211,6 +215,8 @@
     }));
     const pub = events.map(e => {
       const [verb, what] = (VERB[e.type] || (x => ['Activity in', x.repo.name]))(e);
+      if (e.public === false) return { at: e.created_at, html: `<span class="gf-verb">${verb}</span>
+          <span class="gf-repo">a private repository</span>` };
       return { at: e.created_at, html: `<span class="gf-verb">${verb}</span>
           <a class="gf-repo" href="https://github.com/${what.split(' · ')[0]}" target="_blank" rel="noopener">${what}</a>` };
     });
@@ -242,16 +248,34 @@
   }
 
   /* ═══════════════ boot ══════════════════════════════════ */
-  async function load() {
-    status('sync', 'syncing');
+  const getSnapshot = async () => {
+    try {
+      const r = await fetch(`${SNAP}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) return null;
+      const j = await r.json();
+      return Date.now() - new Date(j.generatedAt) < SNAP_MAX_AGE ? j : null;
+    } catch { return null; }
+  };
+  const ok$ = value => ({ status: 'fulfilled', value });
+
+  let shown = null;   /* generatedAt of the snapshot on screen */
+
+  async function load(silent = false) {
+    if (!silent) status('sync', 'syncing');
     let ok = 0, failed = 0;
 
-    const [user, repos, events, cal] = await Promise.allSettled([
-      getJSON(`${API}/users/${USER}`),
-      getJSON(`${API}/users/${USER}/repos?per_page=100&sort=pushed`),
-      getJSON(`${API}/users/${USER}/events/public?per_page=100`),
-      getJSON(CAL)
-    ]);
+    const snap = await getSnapshot();
+    if (silent && (!snap || snap.generatedAt === shown)) return;
+    shown = snap?.generatedAt ?? null;
+
+    const [user, repos, events, cal] = snap
+      ? [ok$(snap.user), ok$(snap.repos), ok$(snap.events), ok$({ total: { lastYear: snap.calendar.total }, contributions: snap.calendar.contributions })]
+      : await Promise.allSettled([
+          getJSON(`${API}/users/${USER}`),
+          getJSON(`${API}/users/${USER}/repos?per_page=100&sort=pushed`),
+          getJSON(`${API}/users/${USER}/events/public?per_page=100`),
+          getJSON(CAL)
+        ]);
 
     let days = [];
     if (cal.status === 'fulfilled' && cal.value.contributions?.length) {
@@ -294,7 +318,7 @@
         $('ghLastSub').textContent = 'private repository';
       } else if (ev && ev.created_at > last.pushed_at) {
         $('ghLast').textContent = ago(ev.created_at);
-        $('ghLastSub').textContent = ev.repo.name;
+        $('ghLastSub').textContent = ev.repo.name ?? 'private repository';
       } else {
         $('ghLast').textContent = ago(last.pushed_at);
         $('ghLastSub').textContent = last.name;
@@ -320,6 +344,8 @@
     if (!ok) status('down', 'offline');
     else if (failed) status('partial', 'partial');
     else status('live', 'live');
+    const n = $('ghStatus');
+    if (n) n.title = snap ? `Snapshot from ${new Date(snap.generatedAt).toLocaleString()}` : 'Live public data';
   }
 
   const start = () => {
@@ -330,6 +356,8 @@
       if (!e[0].isIntersecting) return;
       o.disconnect();
       load().catch(() => status('down', 'offline'));
+      /* pick up new snapshots without a reload; quiet unless data changed */
+      setInterval(() => { if (!document.hidden) load(true).catch(() => {}); }, REFRESH);
     }, { rootMargin: '300px 0px' }).observe(section);
   };
 
