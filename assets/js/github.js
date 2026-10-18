@@ -37,6 +37,11 @@
     const mo = d / 30.4; if (mo < 12) return `${Math.floor(mo)}mo ago`;
     return `${Math.floor(d / 365)}y ago`;
   };
+  /* calendar days carry no time — compare whole local days */
+  const dayAgo = date => {
+    const d = Math.round((new Date(new Date().toDateString()) - new Date(date + 'T00:00:00')) / 864e5);
+    return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? `${d}d ago` : ago(date + 'T00:00:00');
+  };
   const monthYear = iso => new Date(iso + 'T00:00:00')
     .toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 
@@ -192,20 +197,30 @@
     ReleaseEvent:         e => ['Released in', e.repo.name]
   };
 
-  function renderFeed(events) {
+  /* private-repo work never appears in the public events API, but its
+     daily counts do show in the calendar (when "private contributions"
+     is enabled on the profile) — surface those days so the feed isn't stale */
+  function renderFeed(events, days = []) {
     const host = $('ghFeed');
     if (!host) return;
-    const rows = events.slice(0, 6).map(e => {
+    const newest = events[0]?.created_at.slice(0, 10) ?? '';
+    const priv = days.filter(d => d.count > 0 && d.date > newest).reverse().map(d => ({
+      at: d.date + 'T12:00:00Z',
+      html: `<span class="gf-verb">${d.count} contribution${d.count === 1 ? '' : 's'} in</span>
+          <span class="gf-repo">private repositories</span>`
+    }));
+    const pub = events.map(e => {
       const [verb, what] = (VERB[e.type] || (x => ['Activity in', x.repo.name]))(e);
-      return `<li>
+      return { at: e.created_at, html: `<span class="gf-verb">${verb}</span>
+          <a class="gf-repo" href="https://github.com/${what.split(' · ')[0]}" target="_blank" rel="noopener">${what}</a>` };
+    });
+    const rows = priv.concat(pub).slice(0, 6).map(r => `<li>
         <span class="gf-dot" aria-hidden="true"></span>
         <div class="gf-body">
-          <span class="gf-verb">${verb}</span>
-          <a class="gf-repo" href="https://github.com/${what.split(' · ')[0]}" target="_blank" rel="noopener">${what}</a>
+          ${r.html}
         </div>
-        <time datetime="${e.created_at}">${ago(e.created_at)}</time>
-      </li>`;
-    });
+        <time datetime="${r.at}">${r.at.endsWith('T12:00:00Z') ? dayAgo(r.at.slice(0, 10)) : ago(r.at)}</time>
+      </li>`);
     host.innerHTML = rows.join('') || '<li class="muted">No public activity in the last 90 days.</li>';
   }
 
@@ -238,8 +253,9 @@
       getJSON(CAL)
     ]);
 
+    let days = [];
     if (cal.status === 'fulfilled' && cal.value.contributions?.length) {
-      const days = cal.value.contributions.filter(d => d.date <= new Date().toISOString().slice(0, 10));
+      days = cal.value.contributions.filter(d => d.date <= new Date().toISOString().slice(0, 10));
       const total = cal.value.total?.lastYear ?? days.reduce((a, d) => a + d.count, 0);
       counter($('ghContrib'), total);
       $('ghContribSub').textContent = `across ${days.filter(d => d.count > 0).length} active days`;
@@ -270,8 +286,19 @@
     if (repos.status === 'fulfilled' && repos.value.length) {
       const list = repos.value;
       const last = list[0];
-      $('ghLast').textContent = ago(last.pushed_at);
-      $('ghLastSub').textContent = last.name;
+      /* newest of: public repo push, public event, calendar day (covers private repos) */
+      const ev = events.status === 'fulfilled' ? events.value.find(e => e.type === 'PushEvent') : null;
+      const lastDay = [...days].reverse().find(d => d.count > 0)?.date;
+      if (lastDay && lastDay > (ev?.created_at ?? last.pushed_at).slice(0, 10) && lastDay > last.pushed_at.slice(0, 10)) {
+        $('ghLast').textContent = dayAgo(lastDay);
+        $('ghLastSub').textContent = 'private repository';
+      } else if (ev && ev.created_at > last.pushed_at) {
+        $('ghLast').textContent = ago(ev.created_at);
+        $('ghLastSub').textContent = ev.repo.name;
+      } else {
+        $('ghLast').textContent = ago(last.pushed_at);
+        $('ghLastSub').textContent = last.name;
+      }
       renderLanguages(list);
       renderRepos(list);
       ok++;
@@ -283,7 +310,7 @@
       $('langChart').innerHTML = '<p class="muted gh-empty">Repository data unavailable.</p>';
     }
 
-    if (events.status === 'fulfilled') { renderFeed(events.value); ok++; }
+    if (events.status === 'fulfilled') { renderFeed(events.value, days); ok++; }
     else {
       failed++;
       $('ghFeed').innerHTML = `<li class="muted">Activity feed unavailable —
